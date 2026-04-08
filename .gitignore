@@ -29,3 +29,6 @@ local.properties
 
 # App module specific
 /app/build
+
+# Local rules
+.geminirules
