@@ -23,7 +23,8 @@ class JournalViewModel @Inject constructor(
         refresh()
     }
 
-    private fun refresh() {
+    /** Added this public refresh method so the UI can fetch immediately upon resuming without restarting the app. */
+    fun refresh() {
         viewModelScope.launch {
             _entries.value = repository.getAllEntries()
         }

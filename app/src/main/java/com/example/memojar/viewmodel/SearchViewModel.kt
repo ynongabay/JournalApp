@@ -46,6 +46,11 @@ class SearchViewModel @Inject constructor(
 
     fun deleteEntry(id: String) {
         repository.deleteEntry(id)
+        refresh()
+    }
+
+    /** Added this refresh method and an observer to trigger update upon editing and returning without needing app restart */
+    fun refresh() {
         val current = _searchQuery.value
         _searchQuery.value = ""
         _searchQuery.value = current
