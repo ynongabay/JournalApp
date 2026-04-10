@@ -14,3 +14,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "MemoJar"
 include(":app")
+
