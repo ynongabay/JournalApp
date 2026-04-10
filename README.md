@@ -3,6 +3,7 @@
 MemoJar is a modern Android journaling application built entirely with Kotlin and Jetpack Compose. Designed to be elegant and smooth, it embraces the complete Material Design 3 language to offer users a reliable, native, and engaging notebook experience.
 
 ## Features
+- **Category System**: Manage entries across three distinct contexts: "Work", "Day-to-Day", and "Private". The Private category is securely protected by a 4-digit PIN lock screen!
 - **Create and Edit Entries**: Log your complete thoughts using expressive local states containing dates, photos, dynamic tag filters, and mood associations.
 - **Local Storage System**: Entries are securely packaged and maintained locally leveraging SharedPreferences combined with Gson serialization.
 - **Swipe Gestures**: Clean swipe-to-delete behaviors utilizing strict Material 3 bounding mechanics gracefully tied into the architecture.
