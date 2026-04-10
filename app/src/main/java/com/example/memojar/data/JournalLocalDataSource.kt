@@ -45,4 +45,8 @@ class JournalLocalDataSource(context: Context) {
             it.content.lowercase().contains(lowerQuery)
         }
     }
+
+    fun getEntriesByCategory(category: String): List<JournalEntry> {
+        return getAllEntries().filter { it.category == category }
+    }
 }

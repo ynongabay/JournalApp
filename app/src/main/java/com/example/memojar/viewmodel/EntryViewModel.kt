@@ -22,6 +22,7 @@ class EntryViewModel @Inject constructor(
     var mood = mutableStateOf("neutral")
     var tags = mutableStateListOf<String>()
     var imagePath = mutableStateOf<String?>(null)
+    var category = mutableStateOf("day_to_day")
     var createdAt = mutableStateOf(0L)
     var updatedAt = mutableStateOf(0L)
 
@@ -36,6 +37,7 @@ class EntryViewModel @Inject constructor(
                 tags.clear()
                 tags.addAll(entry.tags)
                 imagePath.value = entry.imagePath
+                category.value = entry.category
                 createdAt.value = entry.createdAt
                 updatedAt.value = entry.updatedAt
             }
@@ -57,6 +59,7 @@ class EntryViewModel @Inject constructor(
                 mood = mood.value,
                 tags = tags.toList(),
                 imagePath = imagePath.value,
+                category = category.value,
                 createdAt = createdAt,
                 updatedAt = System.currentTimeMillis()
             )
@@ -79,6 +82,7 @@ class EntryViewModel @Inject constructor(
         mood.value = "neutral"
         tags.clear()
         imagePath.value = null
+        category.value = "day_to_day"
         createdAt.value = 0L
         updatedAt.value = 0L
     }

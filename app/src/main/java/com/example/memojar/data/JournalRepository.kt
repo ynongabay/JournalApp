@@ -6,4 +6,5 @@ interface JournalRepository {
     fun deleteEntry(id: String)
     fun getEntryById(id: String): JournalEntry?
     fun searchEntries(query: String): List<JournalEntry>
+    fun getEntriesByCategory(category: String): List<JournalEntry>
 }

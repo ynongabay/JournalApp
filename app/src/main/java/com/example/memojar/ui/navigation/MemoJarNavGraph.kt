@@ -11,7 +11,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.memojar.ui.screens.EntryDetailScreen
 import com.example.memojar.ui.screens.EntryFormScreen
+import com.example.memojar.ui.screens.EntryListScreen
 import com.example.memojar.ui.screens.HomeScreen
+
 import com.example.memojar.ui.screens.SearchScreen
 
 @Composable
@@ -27,7 +29,12 @@ fun MemoJarNavGraph(navController: NavHostController) {
         composable(route = Screen.Home.route) {
             HomeScreen(navController = navController)
         }
-        
+
+        composable(route = Screen.EntryList.route) {
+            EntryListScreen(navController = navController)
+        }
+
+
         composable(route = Screen.NewEntry.route) {
             EntryFormScreen(entryId = null, navController = navController)
         }

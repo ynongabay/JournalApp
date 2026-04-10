@@ -31,17 +31,24 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.memojar.viewmodel.EntryViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.memojar.viewmodel.JournalViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EntryFormScreen(
     entryId: String?,
     navController: NavController,
-    viewModel: EntryViewModel = hiltViewModel()
+    viewModel: EntryViewModel = hiltViewModel(),
+    journalViewModel: JournalViewModel = hiltViewModel()
 ) {
+    val currentCategory by journalViewModel.selectedCategory.collectAsStateWithLifecycle()
+
     LaunchedEffect(entryId) {
         if (entryId != null) {
             viewModel.loadEntry(entryId)
+        } else {
+            viewModel.category.value = currentCategory
         }
     }
 
@@ -73,6 +80,21 @@ fun EntryFormScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            val displayCategory = when (viewModel.category.value) {
+                "work" -> "Work"
+                "day_to_day" -> "Day-to-Day"
+                "private" -> "Private"
+                else -> viewModel.category.value
+            }
+
+            OutlinedTextField(
+                value = displayCategory,
+                onValueChange = {},
+                label = { Text("Category") },
+                readOnly = true,
+                modifier = Modifier.fillMaxWidth()
+            )
+
             OutlinedTextField(
                 value = viewModel.title.value,
                 onValueChange = { viewModel.title.value = it },

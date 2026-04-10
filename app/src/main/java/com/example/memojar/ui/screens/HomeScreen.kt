@@ -11,10 +11,18 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Work
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.*
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.fadeIn
+import kotlinx.coroutines.delay
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,32 +43,23 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-@OptIn(ExperimentalMaterial3Api::class, androidx.compose.foundation.ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     navController: NavController,
     viewModel: JournalViewModel = hiltViewModel()
 ) {
-    val entries by viewModel.entries.collectAsStateWithLifecycle()
-    var fabVisible by remember { mutableStateOf(false) }
-    val lifecycleOwner = LocalLifecycleOwner.current
+    var showWork by remember { mutableStateOf(false) }
+    var showDay by remember { mutableStateOf(false) }
+    var showPrivate by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        kotlinx.coroutines.delay(300)
-        fabVisible = true
-    }
-
-    // Refresh entries correctly every time this screen becomes the active resumed screen
-    DisposableEffect(lifecycleOwner) {
-        val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_RESUME) {
-                viewModel.refresh()
-            }
-        }
-        lifecycleOwner.lifecycle.addObserver(observer)
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
-        }
+        delay(100)
+        showWork = true
+        delay(100)
+        showDay = true
+        delay(100)
+        showPrivate = true
     }
 
     Scaffold(
@@ -73,54 +72,103 @@ fun HomeScreen(
                     }
                 }
             )
-        },
-        floatingActionButton = {
-            androidx.compose.animation.AnimatedVisibility(
-                visible = fabVisible,
-                enter = androidx.compose.animation.slideInVertically(initialOffsetY = { it * 2 }) + androidx.compose.animation.fadeIn(),
-                exit = androidx.compose.animation.slideOutVertically(targetOffsetY = { it * 2 }) + androidx.compose.animation.fadeOut()
-            ) {
-                FloatingActionButton(onClick = { navController.navigate(Screen.NewEntry.route) }) {
-                    Icon(imageVector = Icons.Default.Add, contentDescription = "Add Entry")
-                }
-            }
         }
     ) { paddingValues ->
-        if (entries.isEmpty()) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues),
-                contentAlignment = Alignment.Center
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(32.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = "MemoJar",
+                style = MaterialTheme.typography.headlineLarge,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Spacer(modifier = Modifier.height(48.dp))
+
+            AnimatedVisibility(
+                visible = showWork,
+                enter = fadeIn(tween(300)) + slideInVertically(tween(300)) { it / 2 }
             ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Icon(
-                        imageVector = Icons.Default.Info, 
-                        contentDescription = "Empty list", 
-                        modifier = Modifier.size(64.dp), 
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text("No entries yet.", style = MaterialTheme.typography.bodyLarge)
-                }
+                CategoryCard(
+                    title = "Work",
+                    icon = Icons.Default.Work,
+                    onClick = {
+                        viewModel.selectCategory("work")
+                        navController.navigate(Screen.EntryList.route)
+                    }
+                )
             }
-        } else {
-            LazyColumn(
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
+            Spacer(modifier = Modifier.height(24.dp))
+            
+            AnimatedVisibility(
+                visible = showDay,
+                enter = fadeIn(tween(300)) + slideInVertically(tween(300)) { it / 2 }
             ) {
-                items(entries, key = { it.id }) { entry ->
-                    JournalEntryCard(
-                        entry = entry,
-                        modifier = Modifier.animateItemPlacement(),
-                        onClick = { navController.navigate(Screen.EntryDetail.createRoute(entry.id)) },
-                        onDelete = { viewModel.deleteEntry(entry) }
-                    )
-                }
+                CategoryCard(
+                    title = "Day-to-Day",
+                    icon = Icons.Default.DateRange,
+                    onClick = {
+                        viewModel.selectCategory("day_to_day")
+                        navController.navigate(Screen.EntryList.route)
+                    }
+                )
             }
+            Spacer(modifier = Modifier.height(24.dp))
+
+            AnimatedVisibility(
+                visible = showPrivate,
+                enter = fadeIn(tween(300)) + slideInVertically(tween(300)) { it / 2 }
+            ) {
+                CategoryCard(
+                    title = "Private",
+                    icon = Icons.Default.Lock,
+                    onClick = {
+                        viewModel.selectCategory("private")
+                        navController.navigate(Screen.EntryList.route)
+                    }
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CategoryCard(
+    title: String,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    onClick: () -> Unit
+) {
+    ElevatedCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(100.dp),
+        onClick = onClick,
+        colors = CardDefaults.elevatedCardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        )
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 24.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = title,
+                modifier = Modifier.size(40.dp),
+                tint = MaterialTheme.colorScheme.primary
+            )
+            Spacer(modifier = Modifier.width(24.dp))
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleLarge
+            )
         }
     }
 }
