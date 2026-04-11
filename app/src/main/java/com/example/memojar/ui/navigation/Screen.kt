@@ -26,3 +26,4 @@ sealed class Screen(val route: String) {
         fun createRoute(entryId: String): String = "edit_entry/$entryId"
     }
 }
+
