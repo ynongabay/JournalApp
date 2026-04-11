@@ -113,3 +113,4 @@ class JournalLocalDataSourceTest {
         assertEquals("Apple", results[0].title)
     }
 }
+
