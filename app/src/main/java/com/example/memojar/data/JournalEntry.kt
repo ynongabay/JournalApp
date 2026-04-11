@@ -31,3 +31,4 @@ data class JournalEntry(
     // The timestamp when the entry was last updated
     val updatedAt: Long = System.currentTimeMillis()
 )
+
