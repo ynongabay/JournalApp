@@ -40,3 +40,4 @@ class ComposeUITest {
         composeTestRule.onNodeWithText("My Test Entry").assertIsDisplayed()
     }
 }
+
