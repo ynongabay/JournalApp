@@ -109,3 +109,4 @@ class EntryViewModel(
         updatedAt.value = 0L
     }
 }
+
