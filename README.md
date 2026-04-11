@@ -1,26 +1,34 @@
 # MemoJar
 
-MemoJar is a modern Android journaling application built entirely with Kotlin and Jetpack Compose. Designed to be elegant and smooth, it embraces the complete Material Design 3 language to offer users a reliable, native, and engaging notebook experience.
+MemoJar is a modern Android journaling application built with Kotlin and Jetpack Compose. It lets users capture memories, thoughts, and notes in a clean, simple interface following Material Design 3 guidelines.
 
 ## Features
-- **Category System**: Manage entries across three distinct contexts: "Work", "Day-to-Day", and "Private". The Private category is securely protected by a 4-digit PIN lock screen!
-- **Create and Edit Entries**: Log your complete thoughts using expressive local states containing dates, photos, dynamic tag filters, and mood associations.
-- **Local Storage System**: Entries are securely packaged and maintained locally leveraging SharedPreferences combined with Gson serialization.
-- **Swipe Gestures**: Clean swipe-to-delete behaviors utilizing strict Material 3 bounding mechanics gracefully tied into the architecture.
-- **Full Searching**: A fully responsive search UI running on native Kotlin Coroutine Flows allowing users to instantly flatten query results.
+- **Create Entries**: Add new journal entries with a title, content, mood, and tags.
+- **View Entries**: Browse all your entries in a scrollable list on the home screen.
+- **Detailed View**: Tap any entry to see its full content, date, mood, and tags.
+- **Edit Entries**: Update any existing entry with new content.
+- **Delete Entries**: Remove entries with a delete button or from the detail screen.
+- **Mood Tracking**: Select a mood emoji for each entry (awful, sad, neutral, good, happy).
+- **Tags**: Add and remove tags to organize your entries.
+- **Local Storage**: All entries are stored locally on the device using SharedPreferences and Gson.
 
 ## Architecture
-- **MVVM Pattern**: ViewModels manage UI logic separating view rendering safely from data management.
-- **Repository Pattern**: Strict boundaries are guaranteed through dependency injection mapping raw SharedPreferences/Gson wrappers behind a centralized `JournalRepository` interface.
-- **Dependency Injection**: Integrated Dagger Hilt globally mapping singletons strictly via `ApplicationContext`.
-- **Jetpack Navigation**: Type-safe declarative string route passing managed via standard Compose Navigation setups natively executing nested transitions!
+- **MVVM Pattern**: ViewModels manage UI logic, keeping it separate from the screens.
+- **Repository Pattern**: A `JournalRepository` interface sits between ViewModels and the data source, making the code testable.
+- **Manual Dependency Setup**: The `MemoJarApp` Application class creates shared objects (repository, ViewModel factory) that the rest of the app uses.
+- **Jetpack Navigation**: Four Compose screens connected via the Navigation component.
+
+## Screens
+1. **HomeScreen** — Shows all journal entries in a list with a floating + button.
+2. **EntryFormScreen** — Form for creating or editing an entry (title, content, mood, tags).
+3. **EntryDetailScreen** — Full view of a single entry with edit and delete options.
+4. **EditEntry** — Reuses EntryFormScreen to edit an existing entry.
 
 ## Testing
-- **Unit Tests**: Full JVM-layer testing using `Robolectric` for parsing Android specific frameworks (`SharedPreferences`) seamlessly off real devices. Core logic uses `FakeJournalRepository` mapping Kotlin Coroutine tests securely bypassing network or disk boundaries.
-- **UI Tests**: Fully loaded Hilt-backed Compose tests leveraging `@HiltAndroidTest` pushing true integration capabilities traversing native text node operations mapped against actual application states.
+- **Unit Tests**: Test the data layer (`JournalLocalDataSourceTest`) and ViewModel logic (`JournalViewModelTest`) using JUnit and Robolectric.
+- **UI Tests**: Test the full user flow with Compose UI testing (`ComposeUITest`).
 
 ## Getting Started
-To view and compile MemoJar:
-1. Ensure you have Android Studio installed with access to JDK 17+ targeting SDK 34+.
-2. Simply load up the target module folder to let Gradle finish its sync.
-3. Hook up a virtual Android device (E.g. API 34+ images strongly recommended) and compile to launch!
+1. Open the project in Android Studio with JDK 17+ and SDK 34+.
+2. Let Gradle sync and download dependencies.
+3. Run the app on an emulator or physical device (API 26+).

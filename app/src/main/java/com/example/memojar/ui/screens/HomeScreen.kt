@@ -1,41 +1,23 @@
 package com.example.memojar.ui.screens
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Work
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.*
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.fadeIn
-import kotlinx.coroutines.delay
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
+import com.example.memojar.MemoJarApp
 import com.example.memojar.data.JournalEntry
 import com.example.memojar.ui.navigation.Screen
 import com.example.memojar.viewmodel.JournalViewModel
@@ -43,244 +25,179 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+/**
+ * HomeScreen shows a list of all journal entries.
+ * It is the first screen users see when they open the app.
+ * Users can tap an entry to view its details, or tap the + button to create a new one.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(
-    navController: NavController,
-    viewModel: JournalViewModel = hiltViewModel()
-) {
-    var showWork by remember { mutableStateOf(false) }
-    var showDay by remember { mutableStateOf(false) }
-    var showPrivate by remember { mutableStateOf(false) }
+fun HomeScreen(navController: NavController) {
 
+    // Get the app instance to access the ViewModel factory
+    val app = LocalContext.current.applicationContext as MemoJarApp
+
+    // Create (or retrieve) the JournalViewModel using our custom factory
+    val viewModel: JournalViewModel = viewModel(factory = app.viewModelFactory)
+
+    // Refresh the entry list every time this screen appears
     LaunchedEffect(Unit) {
-        delay(100)
-        showWork = true
-        delay(100)
-        showDay = true
-        delay(100)
-        showPrivate = true
+        viewModel.refresh()
     }
 
+    // Scaffold provides the basic Material Design layout structure
+    // with a top bar, content area, and floating action button
     Scaffold(
+        // Top bar with the app title
         topBar = {
-            TopAppBar(
-                title = { Text("MemoJar") },
-                actions = {
-                    IconButton(onClick = { navController.navigate(Screen.Search.route) }) {
-                        Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
-                    }
-                }
-            )
+            TopAppBar(title = { Text("MemoJar") })
+        },
+        // Floating action button to create new entries
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { navController.navigate(Screen.NewEntry.route) }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Add Entry"
+                )
+            }
         }
     ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = "MemoJar",
-                style = MaterialTheme.typography.headlineLarge,
-                color = MaterialTheme.colorScheme.primary
-            )
-            Spacer(modifier = Modifier.height(48.dp))
 
-            AnimatedVisibility(
-                visible = showWork,
-                enter = fadeIn(tween(300)) + slideInVertically(tween(300)) { it / 2 }
-            ) {
-                CategoryCard(
-                    title = "Work",
-                    icon = Icons.Default.Work,
-                    onClick = {
-                        viewModel.selectCategory("work")
-                        navController.navigate(Screen.EntryList.route)
-                    }
-                )
-            }
-            Spacer(modifier = Modifier.height(24.dp))
-            
-            AnimatedVisibility(
-                visible = showDay,
-                enter = fadeIn(tween(300)) + slideInVertically(tween(300)) { it / 2 }
-            ) {
-                CategoryCard(
-                    title = "Day-to-Day",
-                    icon = Icons.Default.DateRange,
-                    onClick = {
-                        viewModel.selectCategory("day_to_day")
-                        navController.navigate(Screen.EntryList.route)
-                    }
-                )
-            }
-            Spacer(modifier = Modifier.height(24.dp))
+        // Show different content depending on whether entries exist
+        if (viewModel.entries.isEmpty()) {
 
-            AnimatedVisibility(
-                visible = showPrivate,
-                enter = fadeIn(tween(300)) + slideInVertically(tween(300)) { it / 2 }
-            ) {
-                CategoryCard(
-                    title = "Private",
-                    icon = Icons.Default.Lock,
-                    onClick = {
-                        viewModel.selectCategory("private")
-                        navController.navigate(Screen.EntryList.route)
-                    }
-                )
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun CategoryCard(
-    title: String,
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
-    onClick: () -> Unit
-) {
-    ElevatedCard(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(100.dp),
-        onClick = onClick,
-        colors = CardDefaults.elevatedCardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant
-        )
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 24.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = title,
-                modifier = Modifier.size(40.dp),
-                tint = MaterialTheme.colorScheme.primary
-            )
-            Spacer(modifier = Modifier.width(24.dp))
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleLarge
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun JournalEntryCard(
-    entry: JournalEntry,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit,
-    onDelete: () -> Unit
-) {
-    val dismissState = rememberSwipeToDismissBoxState(
-        confirmValueChange = { value ->
-            if (value == SwipeToDismissBoxValue.EndToStart || value == SwipeToDismissBoxValue.StartToEnd) {
-                onDelete()
-                return@rememberSwipeToDismissBoxState true
-            }
-            false
-        }
-    )
-
-    SwipeToDismissBox(
-        state = dismissState,
-        modifier = modifier,
-        backgroundContent = {
-            val color = if (dismissState.dismissDirection != SwipeToDismissBoxValue.Settled) {
-                MaterialTheme.colorScheme.errorContainer
-            } else {
-                Color.Transparent
-            }
+            // Empty state — show a friendly message when there are no entries
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(color, MaterialTheme.shapes.medium)
-                    .padding(16.dp),
-                contentAlignment = if (dismissState.dismissDirection == SwipeToDismissBoxValue.StartToEnd) Alignment.CenterStart else Alignment.CenterEnd
+                    .padding(paddingValues),
+                contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = "Delete",
-                    tint = MaterialTheme.colorScheme.onErrorContainer
-                )
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Icon(
+                        imageVector = Icons.Default.Info,
+                        contentDescription = "No entries",
+                        modifier = Modifier.size(64.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = "No entries yet. Tap + to create one!",
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                }
             }
-        },
-        content = {
-            Card(
+
+        } else {
+
+            // LazyColumn is like a RecyclerView — it only renders visible items,
+            // making it efficient for long lists
+            LazyColumn(
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { onClick() },
-                shape = MaterialTheme.shapes.medium
+                    .fillMaxSize()
+                    .padding(paddingValues)
             ) {
-                Row(modifier = Modifier.padding(16.dp)) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(text = entry.title, style = MaterialTheme.typography.titleMedium)
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(
-                            text = entry.content,
-                            style = MaterialTheme.typography.bodySmall,
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            Surface(
-                                shape = MaterialTheme.shapes.small,
-                                color = MaterialTheme.colorScheme.secondaryContainer
-                            ) {
-                                Text(
-                                    text = entry.mood.replaceFirstChar { it.uppercase() },
-                                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-                                    style = MaterialTheme.typography.labelSmall
-                                )
-                            }
-                            
-                            val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
-                            Text(
-                                text = dateFormat.format(Date(entry.createdAt)),
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
+                // Create a card for each entry in the list.
+                // "key" helps Compose identify each item efficiently.
+                items(viewModel.entries, key = { it.id }) { entry ->
+                    JournalEntryCard(
+                        entry = entry,
+                        onClick = {
+                            navController.navigate(Screen.EntryDetail.createRoute(entry.id))
+                        },
+                        onDelete = {
+                            viewModel.deleteEntry(entry)
                         }
-
-                        if (entry.tags.isNotEmpty()) {
-                            Spacer(modifier = Modifier.height(8.dp))
-                            LazyRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                                items(entry.tags) { tag ->
-                                    FilterChip(
-                                        selected = false,
-                                        onClick = { },
-                                        label = { Text(tag) },
-                                        modifier = Modifier.defaultMinSize(minHeight = 48.dp, minWidth = 48.dp)
-                                    )
-                                }
-                            }
-                        }
-                    }
-
-                    if (entry.imagePath != null) {
-                        Spacer(modifier = Modifier.width(16.dp))
-                        AsyncImage(
-                            model = entry.imagePath,
-                            contentDescription = "Thumbnail",
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier.size(64.dp)
-                        )
-                    }
+                    )
                 }
             }
         }
-    )
+    }
+}
+
+/**
+ * JournalEntryCard displays a single journal entry as a Material Design card.
+ * It shows the title, a preview of the content, the mood, and the date.
+ * It also includes a delete button.
+ */
+@Composable
+fun JournalEntryCard(
+    entry: JournalEntry,
+    onClick: () -> Unit,
+    onDelete: () -> Unit
+) {
+    // Card is a Material Design container with rounded corners and elevation
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        onClick = onClick,
+        shape = MaterialTheme.shapes.medium
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+
+            // Top row: title on the left, delete button on the right
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Entry title (takes up remaining space)
+                Text(
+                    text = entry.title,
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.weight(1f)
+                )
+
+                // Delete button (red trash icon)
+                IconButton(onClick = onDelete) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Delete",
+                        tint = MaterialTheme.colorScheme.error
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            // Content preview — shows the first 2 lines of the entry
+            Text(
+                text = entry.content,
+                style = MaterialTheme.typography.bodySmall,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis  // Shows "..." if text is too long
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Mood badge and date
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                // Mood displayed as a small colored badge
+                Surface(
+                    shape = MaterialTheme.shapes.small,
+                    color = MaterialTheme.colorScheme.secondaryContainer
+                ) {
+                    Text(
+                        text = entry.mood.replaceFirstChar { it.uppercase() },
+                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                        style = MaterialTheme.typography.labelSmall
+                    )
+                }
+
+                // Date formatted as "Apr 11, 2026"
+                val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+                Text(
+                    text = dateFormat.format(Date(entry.createdAt)),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+    }
 }

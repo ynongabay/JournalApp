@@ -2,7 +2,6 @@ package com.example.memojar.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -12,31 +11,41 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
+import com.example.memojar.MemoJarApp
 import com.example.memojar.ui.navigation.Screen
 import com.example.memojar.viewmodel.EntryViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+/**
+ * EntryDetailScreen shows the full details of a single journal entry.
+ * Users can read the full content, and choose to edit or delete the entry.
+ */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun EntryDetailScreen(
     entryId: String,
-    navController: NavController,
-    viewModel: EntryViewModel = hiltViewModel()
+    navController: NavController
 ) {
+    // Get the ViewModel using our custom factory
+    val app = LocalContext.current.applicationContext as MemoJarApp
+    val viewModel: EntryViewModel = viewModel(factory = app.viewModelFactory)
+
+    // Load the entry data when this screen opens.
+    // LaunchedEffect runs once when the composable first appears.
     LaunchedEffect(entryId) {
         viewModel.loadEntry(entryId)
     }
 
+    // State variable to control whether the delete confirmation dialog is shown
     var showDeleteDialog by remember { mutableStateOf(false) }
 
+    // Delete confirmation dialog — appears when the user taps the delete button
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
@@ -46,6 +55,7 @@ fun EntryDetailScreen(
                 TextButton(onClick = {
                     showDeleteDialog = false
                     viewModel.deleteEntry(entryId)
+                    // Navigate back to the home screen after deleting
                     navController.popBackStack(Screen.Home.route, false)
                 }) {
                     Text("Delete", color = MaterialTheme.colorScheme.error)
@@ -63,15 +73,24 @@ fun EntryDetailScreen(
         topBar = {
             TopAppBar(
                 title = { },
+                // Back button to return to the previous screen
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Back"
+                        )
                     }
                 },
+                // Edit and Delete action buttons in the top bar
                 actions = {
-                    IconButton(onClick = { navController.navigate(Screen.EditEntry.createRoute(entryId)) }) {
+                    // Edit button — navigates to the edit screen
+                    IconButton(onClick = {
+                        navController.navigate(Screen.EditEntry.createRoute(entryId))
+                    }) {
                         Icon(imageVector = Icons.Default.Edit, contentDescription = "Edit")
                     }
+                    // Delete button — shows the confirmation dialog
                     IconButton(onClick = { showDeleteDialog = true }) {
                         Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete")
                     }
@@ -79,6 +98,7 @@ fun EntryDetailScreen(
             )
         }
     ) { paddingValues ->
+        // Scrollable column for the entry content
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -87,45 +107,36 @@ fun EntryDetailScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            val imagePath = viewModel.imagePath.value
-            if (imagePath != null) {
-                AsyncImage(
-                    model = imagePath,
-                    contentDescription = "Entry image",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(250.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                )
-            }
-
+            // Entry title
             Text(
                 text = viewModel.title.value,
                 style = MaterialTheme.typography.headlineMedium
             )
 
+            // Date and mood information
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
+                // Format the timestamp into a readable date string
                 val dateFormat = SimpleDateFormat("MMM dd, yyyy \u2022 hh:mm a", Locale.getDefault())
                 val dateString = if (viewModel.createdAt.value > 0) {
                     dateFormat.format(Date(viewModel.createdAt.value))
                 } else ""
-                
+
                 Text(
                     text = dateString,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                
+
                 Text(
-                    text = "•",
+                    text = "\u2022",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
 
+                // Mood with first letter capitalized
                 Text(
                     text = viewModel.mood.value.replaceFirstChar { it.uppercase() },
                     style = MaterialTheme.typography.bodySmall,
@@ -133,6 +144,7 @@ fun EntryDetailScreen(
                 )
             }
 
+            // Tags displayed as chips (if any exist)
             if (viewModel.tags.isNotEmpty()) {
                 FlowRow(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -142,13 +154,13 @@ fun EntryDetailScreen(
                         FilterChip(
                             selected = false,
                             onClick = { },
-                            label = { Text(tag) },
-                            modifier = Modifier.defaultMinSize(minHeight = 48.dp, minWidth = 48.dp)
+                            label = { Text(tag) }
                         )
                     }
                 }
             }
 
+            // Full entry content
             Text(
                 text = viewModel.content.value,
                 style = MaterialTheme.typography.bodyLarge

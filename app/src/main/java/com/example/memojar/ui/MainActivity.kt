@@ -3,19 +3,22 @@ package com.example.memojar.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
+/**
+ * MainActivity is the entry point of the app — the first screen Android launches.
+ *
+ * In modern Android development, we use one Activity and navigate
+ * between different Compose screens (instead of having multiple Activities).
+ * Each Compose screen serves the same purpose as a traditional Activity.
+ */
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        val splashScreen = installSplashScreen()
+        // Show the splash screen while the app loads
+        installSplashScreen()
         super.onCreate(savedInstanceState)
+
+        // Set the Compose content — MemoJarApp is the root composable
         setContent {
             MemoJarApp()
         }
