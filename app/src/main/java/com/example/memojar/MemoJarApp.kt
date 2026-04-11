@@ -58,3 +58,4 @@ class MemoJarApp : Application() {
         }
     }
 }
+
