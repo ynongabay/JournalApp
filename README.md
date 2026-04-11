@@ -32,3 +32,4 @@ MemoJar is a modern Android journaling application built with Kotlin and Jetpack
 1. Open the project in Android Studio with JDK 17+ and SDK 34+.
 2. Let Gradle sync and download dependencies.
 3. Run the app on an emulator or physical device (API 26+).
+
