@@ -80,3 +80,4 @@ class JournalViewModelTest {
         assertTrue(viewModel.entries.isEmpty())
     }
 }
+
