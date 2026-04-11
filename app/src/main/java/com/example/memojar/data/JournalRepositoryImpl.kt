@@ -27,3 +27,4 @@ class JournalRepositoryImpl(
     override fun searchEntries(query: String): List<JournalEntry> =
         localDataSource.searchEntries(query)
 }
+
