@@ -27,3 +27,4 @@ interface JournalRepository {
     /** Searches entries by title or content. */
     fun searchEntries(query: String): List<JournalEntry>
 }
+
