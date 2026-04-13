@@ -26,30 +26,19 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-/**
- * EntryDetailScreen shows the full details of a single journal entry.
- * Users can read the full content, and choose to edit or delete the entry.
- */
+// Shows the full details of one entry with edit and delete options
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-fun EntryDetailScreen(
-    entryId: String,
-    navController: NavController
-) {
-    // Get the ViewModel using our custom factory
+fun EntryDetailScreen(entryId: String, navController: NavController) {
+
     val app = LocalContext.current.applicationContext as MemoJarApp
     val viewModel: EntryViewModel = viewModel(factory = app.viewModelFactory)
 
-    // Load the entry data when this screen opens.
-    // LaunchedEffect runs once when the composable first appears.
-    LaunchedEffect(entryId) {
-        viewModel.loadEntry(entryId)
-    }
+    LaunchedEffect(entryId) { viewModel.loadEntry(entryId) }
 
-    // State variable to control whether the delete confirmation dialog is shown
     var showDeleteDialog by remember { mutableStateOf(false) }
 
-    // Delete confirmation dialog — appears when the user taps the delete button
+    // Delete confirmation popup
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
@@ -59,16 +48,11 @@ fun EntryDetailScreen(
                 TextButton(onClick = {
                     showDeleteDialog = false
                     viewModel.deleteEntry(entryId)
-                    // Navigate back to the home screen after deleting
                     navController.popBackStack(Screen.Home.route, false)
-                }) {
-                    Text("Delete", color = MaterialTheme.colorScheme.error)
-                }
+                }) { Text("Delete", color = MaterialTheme.colorScheme.error) }
             },
             dismissButton = {
-                TextButton(onClick = { showDeleteDialog = false }) {
-                    Text("Cancel")
-                }
+                TextButton(onClick = { showDeleteDialog = false }) { Text("Cancel") }
             }
         )
     }
@@ -77,114 +61,70 @@ fun EntryDetailScreen(
         topBar = {
             TopAppBar(
                 title = { },
-                // Back button to return to the previous screen
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Back"
-                        )
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 },
-                // Edit and Delete action buttons in the top bar
                 actions = {
-                    // Edit button — navigates to the edit screen
                     IconButton(onClick = {
                         navController.navigate(Screen.EditEntry.createRoute(entryId))
-                    }) {
-                        Icon(imageVector = Icons.Default.Edit, contentDescription = "Edit")
-                    }
-                    // Delete button — shows the confirmation dialog
+                    }) { Icon(Icons.Default.Edit, contentDescription = "Edit") }
                     IconButton(onClick = { showDeleteDialog = true }) {
-                        Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete")
+                        Icon(Icons.Default.Delete, contentDescription = "Delete")
                     }
                 }
             )
         }
     ) { paddingValues ->
-        // Scrollable column for the entry content
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp),
+            modifier = Modifier.fillMaxSize().padding(paddingValues)
+                .verticalScroll(rememberScrollState()).padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // If the entry has an attached photo, display it at the top
+            // Show attached photo if there is one
             val imageUri = viewModel.imageUri.value
             if (imageUri != null) {
                 AsyncImage(
                     model = imageUri,
                     contentDescription = "Entry photo",
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(max = 250.dp)
+                    modifier = Modifier.fillMaxWidth().heightIn(max = 250.dp)
                         .clip(RoundedCornerShape(12.dp))
                 )
             }
 
-            // Entry title
-            Text(
-                text = viewModel.title.value,
-                style = MaterialTheme.typography.headlineMedium
-            )
+            // Title
+            Text(viewModel.title.value, style = MaterialTheme.typography.headlineMedium)
 
-            // Date and mood information
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                // Format the timestamp into a readable date string
+            // Date and mood
+            Row(verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 val dateFormat = SimpleDateFormat("MMM dd, yyyy \u2022 hh:mm a", Locale.getDefault())
-                val dateString = if (viewModel.createdAt.value > 0) {
-                    dateFormat.format(Date(viewModel.createdAt.value))
-                } else ""
-
-                Text(
-                    text = dateString,
+                val dateString = if (viewModel.createdAt.value > 0)
+                    dateFormat.format(Date(viewModel.createdAt.value)) else ""
+                Text(dateString, style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text("\u2022", style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(viewModel.mood.value.replaceFirstChar { it.uppercase() },
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-
-                Text(
-                    text = "\u2022",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-
-                // Mood with first letter capitalized
-                Text(
-                    text = viewModel.mood.value.replaceFirstChar { it.uppercase() },
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                    color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
 
-            // Tags displayed as chips (if any exist)
+            // Tags
             if (viewModel.tags.isNotEmpty()) {
-                FlowRow(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
+                FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     viewModel.tags.forEach { tag ->
-                        FilterChip(
-                            selected = false,
-                            onClick = { },
-                            label = { Text(tag) }
-                        )
+                        FilterChip(selected = false, onClick = { }, label = { Text(tag) })
                     }
                 }
             }
 
-            // Full entry content
-            Text(
-                text = viewModel.content.value,
-                style = MaterialTheme.typography.bodyLarge
-            )
+            // Full content
+            Text(viewModel.content.value, style = MaterialTheme.typography.bodyLarge)
         }
     }
 }
-
 
