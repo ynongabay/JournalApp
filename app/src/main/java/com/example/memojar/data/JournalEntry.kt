@@ -35,3 +35,4 @@ data class JournalEntry(
     val updatedAt: Long = System.currentTimeMillis()
 )
 
+
