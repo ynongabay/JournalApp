@@ -25,6 +25,9 @@ data class JournalEntry(
     // A list of tags the user can add to organize entries
     val tags: List<String>,
 
+    // The URI (path) to a photo the user attached, or null if no photo
+    val imageUri: String? = null,
+
     // The timestamp when the entry was first created (milliseconds since 1970)
     val createdAt: Long = System.currentTimeMillis(),
 

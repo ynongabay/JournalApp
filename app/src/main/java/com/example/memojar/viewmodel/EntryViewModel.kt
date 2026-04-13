@@ -35,6 +35,9 @@ class EntryViewModel(
     // mutableStateListOf works like a regular list but triggers UI updates
     var tags = mutableStateListOf<String>()
 
+    // The URI (path) to an attached photo, or null if none
+    var imageUri = mutableStateOf<String?>(null)
+
     // Timestamps for when the entry was created and last updated
     var createdAt = mutableStateOf(0L)
     var updatedAt = mutableStateOf(0L)
@@ -52,6 +55,7 @@ class EntryViewModel(
             mood.value = entry.mood
             tags.clear()
             tags.addAll(entry.tags)
+            imageUri.value = entry.imageUri
             createdAt.value = entry.createdAt
             updatedAt.value = entry.updatedAt
         }
@@ -78,6 +82,7 @@ class EntryViewModel(
             content = content.value,
             mood = mood.value,
             tags = tags.toList(),
+            imageUri = imageUri.value,
             createdAt = createTime,
             updatedAt = System.currentTimeMillis()
         )
@@ -105,6 +110,7 @@ class EntryViewModel(
         content.value = ""
         mood.value = "neutral"
         tags.clear()
+        imageUri.value = null
         createdAt.value = 0L
         updatedAt.value = 0L
     }

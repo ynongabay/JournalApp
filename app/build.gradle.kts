@@ -76,6 +76,9 @@ dependencies {
     // Gson — converts Kotlin objects to/from JSON strings
     implementation("com.google.code.gson:gson:2.10.1")
 
+    // Coil — loads and displays images from URIs in Compose
+    implementation("io.coil-kt:coil-compose:2.6.0")
+
     // Testing libraries
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.robolectric:robolectric:4.11.1")
