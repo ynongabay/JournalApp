@@ -12,24 +12,11 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
-// ============================================================
-// COLOR DEFINITIONS
-// ============================================================
-// Material 3 uses a system of color "roles". Each role has a
-// specific purpose in the UI (e.g., "primary" for main actions,
-// "secondary" for less prominent elements, "error" for errors).
-//
-// Each color has an "on" variant — the text/icon color that
-// should appear ON TOP of that color for good contrast.
-//
-// These warm amber/brown tones give the app a notebook-like feel.
-// ============================================================
-
-// --- Light Theme Colors ---
-val Md_theme_light_primary = Color(0xFF8B5000)             // Main accent color (amber brown)
-val Md_theme_light_onPrimary = Color(0xFFFFFFFF)           // White text on primary
-val Md_theme_light_primaryContainer = Color(0xFFFFDCBE)    // Lighter primary for backgrounds
-val Md_theme_light_onPrimaryContainer = Color(0xFF2C1600)  // Dark text on primary container
+// Light theme colors (warm amber tones)
+val Md_theme_light_primary = Color(0xFF8B5000)
+val Md_theme_light_onPrimary = Color(0xFFFFFFFF)
+val Md_theme_light_primaryContainer = Color(0xFFFFDCBE)
+val Md_theme_light_onPrimaryContainer = Color(0xFF2C1600)
 val Md_theme_light_secondary = Color(0xFF745B45)
 val Md_theme_light_onSecondary = Color(0xFFFFFFFF)
 val Md_theme_light_secondaryContainer = Color(0xFFFFDCBE)
@@ -38,18 +25,18 @@ val Md_theme_light_tertiary = Color(0xFF5A6237)
 val Md_theme_light_onTertiary = Color(0xFFFFFFFF)
 val Md_theme_light_tertiaryContainer = Color(0xFFDFE8B1)
 val Md_theme_light_onTertiaryContainer = Color(0xFF181E00)
-val Md_theme_light_error = Color(0xFFBA1A1A)               // Red for errors
+val Md_theme_light_error = Color(0xFFBA1A1A)
 val Md_theme_light_errorContainer = Color(0xFFFFDAD6)
 val Md_theme_light_onError = Color(0xFFFFFFFF)
 val Md_theme_light_onErrorContainer = Color(0xFF410002)
-val Md_theme_light_background = Color(0xFFFFFBFF)          // Paper white background
+val Md_theme_light_background = Color(0xFFFFFBFF)
 val Md_theme_light_onBackground = Color(0xFF201A16)
 val Md_theme_light_surface = Color(0xFFFFFBFF)
 val Md_theme_light_onSurface = Color(0xFF201A16)
 val Md_theme_light_surfaceVariant = Color(0xFFF3DFD1)
 val Md_theme_light_onSurfaceVariant = Color(0xFF51443B)
 
-// --- Dark Theme Colors ---
+// Dark theme colors
 val Md_theme_dark_primary = Color(0xFFFFB870)
 val Md_theme_dark_onPrimary = Color(0xFF4A2800)
 val Md_theme_dark_primaryContainer = Color(0xFF6A3B00)
@@ -73,13 +60,7 @@ val Md_theme_dark_onSurface = Color(0xFFECE0DA)
 val Md_theme_dark_surfaceVariant = Color(0xFF51443B)
 val Md_theme_dark_onSurfaceVariant = Color(0xFFD6C3B6)
 
-// ============================================================
-// COLOR SCHEMES
-// ============================================================
-// A ColorScheme maps all the color roles to actual colors.
-// We define one for light mode and one for dark mode.
-// ============================================================
-
+// Light color scheme
 private val LightColorScheme = lightColorScheme(
     primary = Md_theme_light_primary,
     onPrimary = Md_theme_light_onPrimary,
@@ -105,6 +86,7 @@ private val LightColorScheme = lightColorScheme(
     onSurfaceVariant = Md_theme_light_onSurfaceVariant,
 )
 
+// Dark color scheme
 private val DarkColorScheme = darkColorScheme(
     primary = Md_theme_dark_primary,
     onPrimary = Md_theme_dark_onPrimary,
@@ -130,23 +112,15 @@ private val DarkColorScheme = darkColorScheme(
     onSurfaceVariant = Md_theme_dark_onSurfaceVariant,
 )
 
-// ============================================================
-// THEME COMPOSABLE
-// ============================================================
-
-/**
- * MemoJarTheme wraps the entire app and provides the color scheme.
- * It automatically uses dark or light colors based on the device setting.
- */
+// Applies the right theme (dark or light) based on device settings
 @Composable
 fun MemoJarTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    // Pick the right color scheme based on dark mode setting
     val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
 
-    // Set the status bar color to match the theme
+    // Match the status bar color to the theme
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
@@ -156,10 +130,6 @@ fun MemoJarTheme(
         }
     }
 
-    // Apply the theme to all child composables
-    MaterialTheme(
-        colorScheme = colorScheme,
-        content = content
-    )
+    MaterialTheme(colorScheme = colorScheme, content = content)
 }
 
