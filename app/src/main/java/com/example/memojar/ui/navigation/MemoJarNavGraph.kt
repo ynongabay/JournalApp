@@ -10,31 +10,24 @@ import com.example.memojar.ui.screens.EntryDetailScreen
 import com.example.memojar.ui.screens.EntryFormScreen
 import com.example.memojar.ui.screens.HomeScreen
 
-/**
- * MemoJarNavGraph defines all the screens in the app and how
- * to navigate between them.
- *
- * NavHost is like a container that swaps between different screens
- * based on the current route (a URL-like path string).
- */
+// Sets up all screen routes and connects them to composables
 @Composable
 fun MemoJarNavGraph(navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = Screen.Home.route  // The app starts on the Home screen
+        startDestination = Screen.Home.route
     ) {
-        // Home screen — shows the list of all journal entries
+        // Home screen
         composable(route = Screen.Home.route) {
             HomeScreen(navController = navController)
         }
 
-        // New entry screen — creates a new journal entry
+        // New entry screen
         composable(route = Screen.NewEntry.route) {
             EntryFormScreen(entryId = null, navController = navController)
         }
 
-        // Entry detail screen — shows the full details of one entry.
-        // The "entryId" argument is extracted from the route URL.
+        // Entry detail screen — reads entryId from the route
         composable(
             route = Screen.EntryDetail.route,
             arguments = listOf(navArgument("entryId") { type = NavType.StringType })
@@ -45,7 +38,7 @@ fun MemoJarNavGraph(navController: NavHostController) {
             }
         }
 
-        // Edit entry screen — edits an existing journal entry
+        // Edit entry screen
         composable(
             route = Screen.EditEntry.route,
             arguments = listOf(navArgument("entryId") { type = NavType.StringType })
