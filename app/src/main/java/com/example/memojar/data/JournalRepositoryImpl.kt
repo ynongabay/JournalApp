@@ -1,13 +1,7 @@
 package com.example.memojar.data
 
-/**
- * JournalRepositoryImpl is the real implementation of JournalRepository.
- * It delegates all operations to JournalLocalDataSource.
- *
- * This class acts as a "middleman" between the ViewModel and the data source.
- * Right now it simply passes calls through, but in a larger app you could
- * add caching, combine multiple data sources (local + network), etc.
- */
+// Real implementation of JournalRepository.
+// It just passes each call to the local data source.
 class JournalRepositoryImpl(
     private val localDataSource: JournalLocalDataSource
 ) : JournalRepository {
