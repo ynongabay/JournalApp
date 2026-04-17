@@ -1,4 +1,4 @@
-package com.example.memojar.data
+package com.example.journalapp.data
 
 // Interface that lists all the things we can do with entries.
 // We use an interface so we can swap in a fake version for testing.

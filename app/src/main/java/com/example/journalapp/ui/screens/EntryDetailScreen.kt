@@ -1,4 +1,4 @@
-package com.example.memojar.ui.screens
+package com.example.journalapp.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -19,9 +19,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.example.memojar.MemoJarApp
-import com.example.memojar.ui.navigation.Screen
-import com.example.memojar.viewmodel.EntryViewModel
+import com.example.journalapp.JournalAppApp
+import com.example.journalapp.ui.navigation.Screen
+import com.example.journalapp.viewmodel.EntryViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -31,7 +31,7 @@ import java.util.Locale
 @Composable
 fun EntryDetailScreen(entryId: String, navController: NavController) {
 
-    val app = LocalContext.current.applicationContext as MemoJarApp
+    val app = LocalContext.current.applicationContext as JournalAppApp
     val viewModel: EntryViewModel = viewModel(factory = app.viewModelFactory)
 
     LaunchedEffect(entryId) { viewModel.loadEntry(entryId) }

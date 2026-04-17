@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.memojar"
+    namespace = "com.example.journalapp"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.memojar"
+        applicationId = "com.example.journalapp"
         minSdk = 26
         targetSdk = 34
         versionCode = 1

@@ -1,4 +1,4 @@
-package com.example.memojar.ui.navigation
+package com.example.journalapp.ui.navigation
 
 // Defines all screen routes in the app
 sealed class Screen(val route: String) {

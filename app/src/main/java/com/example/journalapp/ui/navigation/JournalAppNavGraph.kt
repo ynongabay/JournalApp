@@ -1,4 +1,4 @@
-package com.example.memojar.ui.navigation
+package com.example.journalapp.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
@@ -6,13 +6,13 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.memojar.ui.screens.EntryDetailScreen
-import com.example.memojar.ui.screens.EntryFormScreen
-import com.example.memojar.ui.screens.HomeScreen
+import com.example.journalapp.ui.screens.EntryDetailScreen
+import com.example.journalapp.ui.screens.EntryFormScreen
+import com.example.journalapp.ui.screens.HomeScreen
 
 // Sets up all screen routes and connects them to composables
 @Composable
-fun MemoJarNavGraph(navController: NavHostController) {
+fun JournalAppNavGraph(navController: NavHostController) {
     NavHost(
         navController = navController,
         startDestination = Screen.Home.route

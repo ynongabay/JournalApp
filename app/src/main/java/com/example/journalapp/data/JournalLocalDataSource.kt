@@ -1,4 +1,4 @@
-package com.example.memojar.data
+package com.example.journalapp.data
 
 import android.content.Context
 import com.google.gson.Gson
@@ -9,7 +9,7 @@ class JournalLocalDataSource(context: Context) {
 
     // SharedPreferences stores data as key-value pairs on the device
     private val prefs = context.applicationContext
-        .getSharedPreferences("memojar_prefs", Context.MODE_PRIVATE)
+        .getSharedPreferences("journalapp_prefs", Context.MODE_PRIVATE)
 
     private val gson = Gson()  // converts objects to/from JSON text
 

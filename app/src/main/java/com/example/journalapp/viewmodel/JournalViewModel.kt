@@ -1,11 +1,11 @@
-package com.example.memojar.viewmodel
+package com.example.journalapp.viewmodel
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.example.memojar.data.JournalEntry
-import com.example.memojar.data.JournalRepository
+import com.example.journalapp.data.JournalEntry
+import com.example.journalapp.data.JournalRepository
 
 // Manages the list of entries shown on the home screen
 class JournalViewModel(

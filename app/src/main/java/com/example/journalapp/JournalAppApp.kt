@@ -1,16 +1,16 @@
-package com.example.memojar
+package com.example.journalapp
 
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.memojar.data.JournalLocalDataSource
-import com.example.memojar.data.JournalRepository
-import com.example.memojar.data.JournalRepositoryImpl
-import com.example.memojar.viewmodel.EntryViewModel
-import com.example.memojar.viewmodel.JournalViewModel
+import com.example.journalapp.data.JournalLocalDataSource
+import com.example.journalapp.data.JournalRepository
+import com.example.journalapp.data.JournalRepositoryImpl
+import com.example.journalapp.viewmodel.EntryViewModel
+import com.example.journalapp.viewmodel.JournalViewModel
 
 // This runs when the app starts. It creates shared objects.
-class MemoJarApp : Application() {
+class JournalAppApp : Application() {
 
     lateinit var repository: JournalRepository
 

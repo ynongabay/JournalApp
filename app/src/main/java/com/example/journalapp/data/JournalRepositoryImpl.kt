@@ -1,4 +1,4 @@
-package com.example.memojar.data
+package com.example.journalapp.data
 
 // Real implementation of JournalRepository.
 // It just passes each call to the local data source.

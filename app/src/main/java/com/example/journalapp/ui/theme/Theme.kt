@@ -1,4 +1,4 @@
-package com.example.memojar.ui.theme
+package com.example.journalapp.ui.theme
 
 import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -114,7 +114,7 @@ private val DarkColorScheme = darkColorScheme(
 
 // Applies the right theme (dark or light) based on device settings
 @Composable
-fun MemoJarTheme(
+fun JournalAppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {

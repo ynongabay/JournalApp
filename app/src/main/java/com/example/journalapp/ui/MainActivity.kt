@@ -1,4 +1,4 @@
-package com.example.memojar.ui
+package com.example.journalapp.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -10,7 +10,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
-        setContent { MemoJarApp() }  // launch the Compose UI
+        setContent { JournalAppApp() }  // launch the Compose UI
     }
 }
 

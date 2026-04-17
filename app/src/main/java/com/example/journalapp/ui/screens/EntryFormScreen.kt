@@ -1,4 +1,4 @@
-package com.example.memojar.ui.screens
+package com.example.journalapp.ui.screens
 
 import android.content.Intent
 import android.net.Uri
@@ -33,15 +33,15 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.example.memojar.MemoJarApp
-import com.example.memojar.viewmodel.EntryViewModel
+import com.example.journalapp.JournalAppApp
+import com.example.journalapp.viewmodel.EntryViewModel
 
 // Form screen for creating a new entry or editing an existing one
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EntryFormScreen(entryId: String?, navController: NavController) {
 
-    val app = LocalContext.current.applicationContext as MemoJarApp
+    val app = LocalContext.current.applicationContext as JournalAppApp
     val viewModel: EntryViewModel = viewModel(factory = app.viewModelFactory)
     val context = LocalContext.current
 

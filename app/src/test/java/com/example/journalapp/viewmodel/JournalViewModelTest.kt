@@ -1,7 +1,7 @@
-package com.example.memojar.viewmodel
+package com.example.journalapp.viewmodel
 
-import com.example.memojar.data.JournalEntry
-import com.example.memojar.data.JournalRepository
+import com.example.journalapp.data.JournalEntry
+import com.example.journalapp.data.JournalRepository
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test

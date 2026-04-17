@@ -1,4 +1,4 @@
-package com.example.memojar.data
+package com.example.journalapp.data
 
 import androidx.test.core.app.ApplicationProvider
 import org.junit.Assert.assertEquals
@@ -21,7 +21,7 @@ class JournalLocalDataSourceTest {
     fun setup() {
         dataSource = JournalLocalDataSource(ApplicationProvider.getApplicationContext())
         ApplicationProvider.getApplicationContext<android.content.Context>()
-            .getSharedPreferences("memojar_prefs", android.content.Context.MODE_PRIVATE)
+            .getSharedPreferences("journalapp_prefs", android.content.Context.MODE_PRIVATE)
             .edit().clear().commit()
     }
 

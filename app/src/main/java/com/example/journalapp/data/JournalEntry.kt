@@ -1,4 +1,4 @@
-package com.example.memojar.data
+package com.example.journalapp.data
 
 import java.util.UUID
 
