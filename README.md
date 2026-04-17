@@ -1,6 +1,6 @@
-# MemoJar
+# JournalApp
 
-MemoJar is a modern Android journaling application built with Kotlin and Jetpack Compose. It lets users capture memories, thoughts, and notes in a clean, simple interface following Material Design 3 guidelines.
+JournalApp is a modern Android journaling application built with Kotlin and Jetpack Compose. It lets users capture memories, thoughts, and notes in a clean, simple interface following Material Design 3 guidelines.
 
 ## Features
 - **Create Entries**: Add new journal entries with a title, content, mood, and tags.
@@ -15,7 +15,7 @@ MemoJar is a modern Android journaling application built with Kotlin and Jetpack
 ## Architecture
 - **MVVM Pattern**: ViewModels manage UI logic, keeping it separate from the screens.
 - **Repository Pattern**: A `JournalRepository` interface sits between ViewModels and the data source, making the code testable.
-- **Manual Dependency Setup**: The `MemoJarApp` Application class creates shared objects (repository, ViewModel factory) that the rest of the app uses.
+- **Manual Dependency Setup**: The `JournalAppApp` Application class creates shared objects (repository, ViewModel factory) that the rest of the app uses.
 - **Jetpack Navigation**: Four Compose screens connected via the Navigation component.
 
 ## Screens
