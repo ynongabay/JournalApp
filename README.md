@@ -25,8 +25,7 @@ JournalApp is a modern Android journaling application built with Kotlin and Jetp
 4. **EditEntry** — Reuses EntryFormScreen to edit an existing entry.
 
 ## Testing
-- **Unit Tests**: Test the data layer (`JournalLocalDataSourceTest`) and ViewModel logic (`JournalViewModelTest`) using JUnit and Robolectric.
-- **UI Tests**: Test the full user flow with Compose UI testing (`ComposeUITest`).
+- **Unit Tests**: The application is tested using unit tests. The data persistence layer is tested via `JournalLocalDataSourceTest` using JUnit and Robolectric. The business logic layer is tested via `JournalViewModelTest` using a `FakeJournalRepository` for isolated testing.
 
 ## Getting Started
 1. Open the project in Android Studio with JDK 17+ and SDK 34+.
