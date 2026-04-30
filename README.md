@@ -64,3 +64,4 @@ Users can attach photos to journal entries using Android's `PickVisualMedia` Pho
 | JUnit 4 | Unit testing framework |
 | Robolectric | Android framework simulation for JVM tests |
 | Git & GitHub | Version control |
+ 
