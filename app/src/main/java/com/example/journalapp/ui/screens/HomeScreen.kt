@@ -37,7 +37,7 @@ fun HomeScreen(navController: NavController) {
     LaunchedEffect(Unit) { viewModel.refresh() }
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text("JournalApp") }) },
+        topBar = { TopAppBar(title = { Text("Mindful Journal") }) },
         // + button to add new entry
         floatingActionButton = {
             FloatingActionButton(
@@ -59,7 +59,7 @@ fun HomeScreen(navController: NavController) {
                         modifier = Modifier.size(64.dp),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant)
                     Spacer(modifier = Modifier.height(16.dp))
-                    Text("No entries yet. Tap + to create one!",
+                    Text("Welcome to your safe space. Tap + to log your mood today.",
                         style = MaterialTheme.typography.bodyLarge)
                 }
             }

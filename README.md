@@ -1,6 +1,6 @@
-# JournalApp
+# Mindful Journal
 
-JournalApp is a modern Android journaling application built with Kotlin and Jetpack Compose. It lets users capture memories, thoughts, and notes in a clean, simple interface following Material Design 3 guidelines.
+Mindful Journal is a privacy-first Mental Health & Wellness tracker designed to help users identify emotional patterns without compromising their data privacy. It lets users capture memories, thoughts, and notes in a clean, simple interface following Material Design 3 guidelines.
 
 ## Features
 - **Create Entries**: Add new journal entries with a title, content, mood, and tags.
